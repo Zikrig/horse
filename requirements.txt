@@ -1,0 +1,6 @@
+aiogram==3.9
+aiogram-calendar
+environs
+asyncio
+schedule
+psycopg2
