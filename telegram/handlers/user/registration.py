@@ -134,6 +134,9 @@ async def reg_describe(message: Message, state: FSMContext):
     
     person_data = (user_id, data['user_name'], data['user_phone'], data['user_describe'], ava_name)
     status = reg_and_stat(pgsdata, person_data)
+    await state.update_data(status=status)
+
+    # await asleep(2)
     await message.answer(
         text = '''Большое спасибо за заполнение анкеты!''',
         reply_markup = main_menu_global(status)

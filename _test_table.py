@@ -32,7 +32,7 @@ from table.work_with_database.admin_work import *
 # print(select_dates_onready(pgsdata, '1001'))
 
 # init_banned_table(pgsdata)
-# print(select_person(pgsdata, 184374602))
+print(select_person(pgsdata, 184374602))
 # put_admin(pgsdata, 184374602)
 # del_person(pgsdata, 184374602)
 # delete_admin(pgsdata, 184374602)
@@ -51,5 +51,5 @@ from table.work_with_database.admin_work import *
 # print(r[0][4])
 # print(select_hot_tasks(pgsdata))
 
-# del_all(pgsdata)
-# init_all(pgsdata)
+del_all(pgsdata)
+init_all(pgsdata)

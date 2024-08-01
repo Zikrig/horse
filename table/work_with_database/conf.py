@@ -22,7 +22,8 @@ def select_one(pgsdata, zap):
         conn.close()
     except (Exception, Error) as error:
         res = []
-        print(f'Ошибка {error}')
+        # print(f'Ошибка {error}')
+        # res = error/
     finally:
         # if cursor:
         #     cursor.close()
@@ -50,6 +51,7 @@ def select_all(pgsdata, zap, rasp=True):
     except (Exception, Error) as error:
         res = []
         print(f'Ошибка {error}')
+        # res = error
     finally:
         # if cursor:
         #     cursor.close()
@@ -76,6 +78,8 @@ def send_some(pgsdata, zap):
 
     except (Exception, Error) as error:
         print(f'Ошибка {error}')
+        res = error
+        return res
     # finally:
     #     if cursor:
     #         cursor.close()
