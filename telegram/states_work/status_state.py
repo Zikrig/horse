@@ -13,7 +13,7 @@ async def actual_status(id, state: FSMContext):
 
 def get_new_status(pgsdata, id):
     pers = people_work.select_person(pgsdata, id)
-    print(pers)
+    # print(pers)
 
     if len(pers) == 0:
         status = 'unreg'
@@ -22,7 +22,7 @@ def get_new_status(pgsdata, id):
     status = 'user'
 
     if ban_work.check_ban(pgsdata, id) != 0:
-        print(ban_work.check_ban(pgsdata, id))
+        # print(ban_work.check_ban(pgsdata, id))
         status = 'banned'
         return status
 

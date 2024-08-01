@@ -1,6 +1,6 @@
 from config import *
 from table.work_with_database.db_init import *
-from table.init.db_init_use import *
+# from table.init.db_init_use import *
 from table.work_with_database.people_work import *
 from table.work_with_database.task_work import *
 from table.work_with_database.ban_work import *
@@ -50,3 +50,6 @@ from table.work_with_database.admin_work import *
 # r = select_by_data_and_status(pgsdata, '2024-07-30', 'False')
 # print(r[0][4])
 # print(select_hot_tasks(pgsdata))
+
+# del_all(pgsdata)
+# init_all(pgsdata)

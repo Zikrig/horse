@@ -11,7 +11,7 @@ def person_gen(pgsdata, person_data):
         alt_person(pgsdata, person_data)
 
 def put_person(pgsdata, pd):
-    return conf.send_some(pgsdata, f"INSERT INTO people(tg_person, name, phone, describe, photo) VALUES ({pd[0]},{pd[1]},{pd[2]},{pd[3]},{pd[4]})")
+    return conf.send_some(pgsdata, f"INSERT INTO people(tg_person, name, phone, describe, photo) VALUES ('{pd[0]}','{pd[1]}','{pd[2]}','{pd[3]}','{pd[4]}')")
 
 def alt_person(pgsdata, pd):
     return conf.send_some(pgsdata, f"UPDATE people SET (name, phone, describe, photo) = ('{pd[1]}', '{pd[2]}', '{pd[3]}', '{pd[4]}') WHERE tg_person={str(pd[0])}")

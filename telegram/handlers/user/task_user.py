@@ -33,7 +33,7 @@ async def new_task(message: Message, state: FSMContext):
 @router.message(F.text.in_(['Сегодня', 'Завтра']), NewTask.date)  
 async def days(message: Message, state: FSMContext):    
     if(message.text == 'Сегодня'):
-        print(datetime.today())
+        # print(datetime.today())
         date = datetime.today()
     elif(message.text == 'Завтра'):
         date = datetime.today() + timedelta(days=1)

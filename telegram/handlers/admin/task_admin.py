@@ -153,7 +153,7 @@ async def tasks_callback(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data.startswith('ban-'), StateFilter(AdminTasks.tasksRaw))
 async def tasks_callback(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    print(data)
+    # print(data)
     user = data['user_to_work']
     await callback.answer()
     if(check_ban(pgsdata, user[1])):

@@ -196,9 +196,9 @@ async def alt_time_callback(callback: CallbackQuery, state: FSMContext):
     time = datetime.strptime(str_time, '%H:%M')
     data = await state.get_data()
     user = list(data['user_to_work'])
-    print(user)
+    # print(user)
     user[9] = time
-    print(user)
+    # print(user)
     await state.update_data(user_to_work=user)
     alt_task_time(pgsdata, user[7], str_time)
     await callback.answer()

@@ -10,7 +10,7 @@ def delete_ban(pgsdata, id):
     return conf.send_some(pgsdata, f"DELETE FROM banned WHERE tg_person={str(id)}")
 
 def check_ban(pgsdata, id):
-    return conf.select_one(pgsdata, f"SELECT COUNT(*) FROM banned WHERE tg_person='{str(id)}'")[0]
+    return conf.select_one(pgsdata, f"SELECT COUNT(*) FROM banned WHERE tg_person={str(id)}")[0]
 
 def check_all_ban(pgsdata):
     return conf.select_all(pgsdata, f"SELECT * FROM banned")

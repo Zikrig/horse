@@ -16,7 +16,8 @@ def select_one(pgsdata, zap):
         cursor.execute(zap)
         conn.commit()  
         res = cursor.fetchone()
-
+        if res == None:
+            res = []
         cursor.close()
         conn.close()
     except (Exception, Error) as error:

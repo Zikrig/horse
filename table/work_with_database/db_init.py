@@ -17,3 +17,6 @@ def init_all(pgsdata):
     init_task_table(pgsdata)
     init_banned_table(pgsdata)
     init_admin_table(pgsdata)
+
+def del_all(pgsdata):
+    send_some(pgsdata, "DROP TABLE people; DROP TABLE task; DROP TABLE banned; DROP TABLE admin;")
