@@ -23,8 +23,10 @@ hh_files = {
 pgsdata = {
     'dbname':"postgres",
     'user':"postgres",
-    'password':"password",
-    'host':"db",
+    # 'password':"password",
+    'password':'httphuggingfapaceTSAGITSArenamapuserpass',
+    # 'host':"db",
+    'host': '127.0.0.1',
     # 'port':"5433"
     'port':"5432"
 }
