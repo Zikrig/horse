@@ -16,7 +16,7 @@ from telegram.keyboards.inline_tasks import *
 from telegram.handlers.not_handler_stuff import *
 from table.work_with_database.task_work import *
 from table.work_with_database.ban_work import *
-from config import pgsdata, avas_dir
+from config import mysqldata, avas_dir
 from telegram.states_work.time_changer import *
 
 router = Router()
@@ -61,7 +61,7 @@ async def default_mode(message: Message, state: FSMContext):
         )
         return True
 
-    tasks = select_by_data_and_status(pgsdata, date_to_search, True, prom_len)
+    tasks = select_by_data_and_status(mysqldata, date_to_search, True, prom_len)
 
     if len(tasks) == 0:
         txt_res = 'Ни одной заявки не нашлось.'
@@ -152,7 +152,7 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
             f'''Вы выбрали дату {date_to_str(date)}. Проверяем наличие поездок''',
         )
 
-    tasks = select_by_data_and_status(pgsdata, date.strftime("%Y-%m-%d"), True, 1)
+    tasks = select_by_data_and_status(mysqldata, date.strftime("%Y-%m-%d"), True, 1)
 
     if len(tasks) == 0:
         txt_res = 'Ни одной заявки не нашлось.'

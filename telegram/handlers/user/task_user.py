@@ -97,17 +97,17 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
 
 @router.message(NewTask.descr)  
 async def descr(message: Message, state: FSMContext): 
-    describe = message.text
-    if describe == 'Пропустить':
-        describe = ''
+    description = message.text
+    if description == 'Пропустить':
+        description = ''
     status = await actual_status(message.from_user.id, state)
-    if(len(describe) > 300):
+    if(len(description) > 300):
         await message.answer(
-            text = f'Длина вашего описания составила {len(describe)} знаков! Пожалуйста, постарайтесь уложиться в 300 знаков.'
+            text = f'Длина вашего описания составила {len(description)} знаков! Пожалуйста, постарайтесь уложиться в 300 знаков.'
         )
     else:
-        tasks = tw.select_unready_tasks(pgsdata, message.from_user.id)
-        if(tasks > 10): 
+        tasks = tw.select_unready_tasks(mysqldata, message.from_user.id)
+        if(len(tasks) > 10): 
             await state.set_state('*')
             await message.answer(
                 text = f'''Извините, вы не можете иметь более 10 заявок! Вы можете удалить или изменить те заявки, что у вас уже есть''',
@@ -117,8 +117,8 @@ async def descr(message: Message, state: FSMContext):
             await state.set_state(NewTask.date)
             data = await state.get_data()
             date = data['date_of']
-            if describe != '':
-                dop = f' с текстом {describe}'
+            if description != '':
+                dop = f' с текстом {description}'
             else:
                 dop = '.'
             await message.answer(
@@ -134,11 +134,11 @@ async def descr(message: Message, state: FSMContext):
                 message.from_user.id,
                 date,
                 '00:00',
-                describe,
-                'False'
+                description,
+                '0'
             ]
             
-            tw.put_task(pgsdata, task_data)
-            for adm in check_all_admin(pgsdata):
-                date_str = date_to_str(datetime.strptime(date, '%Y-%m-%d'))
+            tw.put_task(mysqldata, task_data)
+            for adm in check_all_admin(mysqldata):
+                date_str = date_to_str(date)
                 await send_notification(adm, f'<a href="tg://user?id={message.from_user.id}">Пользователь</a> хочет покататься {date_str}.\nПроверьте заявки!')

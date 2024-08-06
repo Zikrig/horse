@@ -15,7 +15,7 @@ router = Router()
 async def phts(message: Message):
     if(len(lc.imgs)>0):
         album_builder = MediaGroupBuilder(
-        caption=lc.describe
+        caption=lc.description
         )
         for photo_id in lc.imgs:
             album_builder.add(
@@ -25,14 +25,14 @@ async def phts(message: Message):
 
         await message.answer_media_group(
             media=album_builder.build(), 
-            caption=lc.describe,
+            caption=lc.description,
             reply_markup = make_row_keyboard([
                 '❌'
             ])
         )
     else:
         await message.answer(
-            text=lc.describe,
+            text=lc.description,
             reply_markup = make_row_keyboard([
                 '❌'
             ])

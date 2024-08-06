@@ -11,14 +11,14 @@ class Reg(StatesGroup):
     noth = State()
     name = State()
     phone = State()
-    describe = State()
+    description = State()
     photo = State()
 
 class UserAlt(StatesGroup):
     base = State()
     name = State()
     phone = State()
-    describe = State()
+    description = State()
     photo = State()
     
 class NewTask(StatesGroup):
@@ -36,7 +36,7 @@ class MyTasks(StatesGroup):
 
 class AlterAdmin(StatesGroup):
     alterGlobal = State()
-    alterDescribe = State()
+    alterdescription = State()
     alterCoords = State()
     alterPhotos = State()
     addPhoto = State()

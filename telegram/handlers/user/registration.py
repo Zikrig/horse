@@ -12,7 +12,7 @@ router = Router()
 @router.message(F.text =='Анкета')
 async def little_cancel(message: Message, state: FSMContext):
     await state.set_state(Reg.noth)
-    pers = pd.select_person(pgsdata, message.from_user.id)
+    pers = pd.select_person(mysqldata, message.from_user.id)
     if len(pers) == 6:
         path_to_photo = f"{avas_dir}/{pers[5]}"
         capt = f'''Ваша анкета:
@@ -78,14 +78,14 @@ async def reg_name(message: Message, state: FSMContext):
             )
             
 @router.message(Reg.phone)  
-async def reg_describe(message: Message, state: FSMContext):
+async def reg_description(message: Message, state: FSMContext):
     if(len(message.text) < 7 or len(message.text) > 15):
         await message.answer(
             text = "Это не похоже на номер телефона. Пожалуйста, введите номер, чтобы мы смогли с вами связаться.",
         )
     else:
         await state.update_data(user_phone=message.text)
-        await state.set_state(Reg.describe)
+        await state.set_state(Reg.description)
         await message.answer(
             text = '''Нам нужно узнать о вас кое-что. Ответив на эти вопросы вы сильно сэкономите время телефонного разговора.
 Или просто нажмите пропустить.\n
@@ -98,17 +98,17 @@ async def reg_describe(message: Message, state: FSMContext):
                 ])
             )
             
-@router.message(Reg.describe)  
-async def reg_describe(message: Message, state: FSMContext):
+@router.message(Reg.description)  
+async def reg_description(message: Message, state: FSMContext):
     if(len(message.text) > 300):
         await message.answer(
             text = f"Простите, но у вас целых {len(message.text)} символов, а ограничение - 300 символов.",
         )
     else:
-        user_describe = message.text
-        if user_describe == 'Пропустить':
-            user_describe = ''
-        await state.update_data(user_describe=user_describe)
+        user_description = message.text
+        if user_description == 'Пропустить':
+            user_description = ''
+        await state.update_data(user_description=user_description)
         await state.set_state(Reg.photo)
         await message.answer(
             text = '''Пожалуйста, пришлите ваше фото или нажмите пропустить''',
@@ -119,7 +119,7 @@ async def reg_describe(message: Message, state: FSMContext):
             )
             
 @router.message(Reg.photo)  
-async def reg_describe(message: Message, state: FSMContext):
+async def reg_description(message: Message, state: FSMContext):
     user_id = message.from_user.id
     ava_name = f"ava_{user_id}.jpg"
     photo_path = f"{avas_dir}/{ava_name}"
@@ -132,8 +132,8 @@ async def reg_describe(message: Message, state: FSMContext):
     data = await state.get_data()
     await state.set_state(Reg.noth)
     
-    person_data = (user_id, data['user_name'], data['user_phone'], data['user_describe'], ava_name)
-    status = reg_and_stat(pgsdata, person_data)
+    person_data = (user_id, data['user_name'], data['user_phone'], data['user_description'], ava_name)
+    status = reg_and_stat(mysqldata, person_data)
     await state.update_data(status=status)
 
     # await asleep(2)
@@ -166,7 +166,7 @@ async def alt_user_base(message: Message, state: FSMContext):
             reply_markup = make_row_keyboard(['❌'])
         )
     elif(txt == 'Описание'):
-        await state.set_state(UserAlt.describe)
+        await state.set_state(UserAlt.description)
         await message.answer(
             text = '''Пожалуйста, введите новое описание. Ответив на эти вопросы вы сильно сэкономите время телефонного разговора.\n
 Сколько вам лет?
@@ -197,7 +197,7 @@ async def alt_name(message: Message, state: FSMContext):
         await message.answer(
             text = f'Имя успешно изменено на {message.text}'
         )
-        pd.alt_person_field(pgsdata, message.from_user.id, 'name', message.text)
+        pd.alt_person_field(mysqldata, message.from_user.id, 'name', message.text)
         await little_cancel(message, state)
 
 @router.message(UserAlt.phone)
@@ -212,11 +212,11 @@ async def alt_phone(message: Message, state: FSMContext):
         await message.answer(
             text = f'Телефон успешно изменен на {message.text}'
         )
-        pd.alt_person_field(pgsdata, message.from_user.id, 'phone', message.text)
+        pd.alt_person_field(mysqldata, message.from_user.id, 'phone', message.text)
         await little_cancel(message, state)
 
-@router.message(UserAlt.describe)
-async def alt_describe(message: Message, state: FSMContext):
+@router.message(UserAlt.description)
+async def alt_description(message: Message, state: FSMContext):
     if message.text == '❌':
         return True
     if len(message.text) > 300:
@@ -226,9 +226,9 @@ async def alt_describe(message: Message, state: FSMContext):
     else:
         await message.answer(
             text = f'Описание успешно изменено на: \n<i>{message.text}</i>',
-            parse_mose = 'html'
+            parse_mode = 'html'
         )
-        pd.alt_person_field(pgsdata, message.from_user.id, 'describe', message.text)
+        pd.alt_person_field(mysqldata, message.from_user.id, 'description', message.text)
         await little_cancel(message, state)
 
 @router.message(UserAlt.photo)
@@ -245,7 +245,7 @@ async def alt_photo(message: Message, state: FSMContext):
             message.photo[-1],
             destination=photo_path
         )
-        pd.alt_person_field(pgsdata, message.from_user.id, 'photo', ava_name)
+        pd.alt_person_field(mysqldata, message.from_user.id, 'photo', ava_name)
         await message.answer(
             text = f'Фото успешно изменено.',
         )

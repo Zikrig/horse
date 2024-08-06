@@ -16,7 +16,7 @@ holiday_files = {
 
 hh_files = {
     'coords':   '/coords.txt',
-    'describe': '/describe.txt',
+    'description': '/describe.txt',
     'photos': '/photo_paths.txt'
 }
 
@@ -31,4 +31,10 @@ pgsdata = {
     'port':"5432"
 }
 
+mysqldata={
+    'user':'root', 
+    'password':'password',
+    'host':'127.0.0.1',
+    'database':'mydb'
+}
 lc = LocalData(hh_files, textes_dir, horseh_dir, holiday_files)

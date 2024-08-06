@@ -3,4 +3,4 @@ aiogram-calendar
 environs
 asyncio
 schedule
-psycopg2
+# psycopg2

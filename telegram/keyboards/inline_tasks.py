@@ -58,8 +58,8 @@ def clocky():
 def user_task_inline_to_cancel(id):
     builder = InlineKeyboardBuilder()
     builder.row(InlineKeyboardButton(text='Отменить', callback_data=f'cancel-{id}'))
-    builder.add(InlineKeyboardButton(text='изменить дату', callback_data=f'change-date-{id}'))
-    builder.add(InlineKeyboardButton(text='изменить время', callback_data=f'change-time-{id}'))
+    builder.row(InlineKeyboardButton(text='изменить дату', callback_data=f'change-date-{id}'))
+    builder.row(InlineKeyboardButton(text='изменить время', callback_data=f'change-time-{id}'))
     return builder
 
 def really_cancel_inline(id):
@@ -92,4 +92,3 @@ def holidays_justdays(lc):
         InlineKeyboardButton(text='❌', callback_data=f'return-to-weeks')
         )
     return builder
-

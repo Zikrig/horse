@@ -29,7 +29,7 @@ async def admd1(message: Message, state: FSMContext):
     )
     if(len(lc.imgs)>0):
         album_builder = MediaGroupBuilder(
-        caption=lc.describe
+        caption=lc.description
         )
         for photo_id in lc.imgs:
             album_builder.add(
@@ -39,18 +39,18 @@ async def admd1(message: Message, state: FSMContext):
 
         await message.answer_media_group(
             media=album_builder.build(), 
-            caption=lc.describe,
+            caption=lc.description,
         )
     else:
             await message.answer(
-            text=lc.describe,
+            text=lc.description,
         )
     if(not lc.coord1 is None):
         await message.answer_location(latitude=lc.coord1, longitude=lc.coord2)
 
 @router.message(F.text == 'Описание', AlterAdmin.alterGlobal)
 async def opis(message: Message, state: FSMContext):
-    await state.set_state(AlterAdmin.alterDescribe)
+    await state.set_state(AlterAdmin.alterdescription)
     await message.answer(
         text = 'Введите новое описание. Вы можете использовать функционал телеграма - курсив и прочее.',
         parse_mode='html',
@@ -59,7 +59,7 @@ async def opis(message: Message, state: FSMContext):
             ])
     )
 
-@router.message(AlterAdmin.alterDescribe)
+@router.message(AlterAdmin.alterdescription)
 async def opis2(message: Message, state: FSMContext):
     await state.set_state(SelectMode.admin)
     lc.set_descr(message.text)

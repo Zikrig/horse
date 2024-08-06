@@ -32,9 +32,9 @@ class LocalData:
         if('coords' in self.hh_files):
             if(os.path.exists(textes_dir+self.hh_files['coords'])):
                 self.init_coords()
-        if('describe' in self.hh_files):
-            if(os.path.exists(textes_dir+self.hh_files['describe'])):
-                self.init_describe()
+        if('description' in self.hh_files):
+            if(os.path.exists(textes_dir+self.hh_files['description'])):
+                self.init_description()
 
         if('photos' in self.hh_files):
             self.init_photos()
@@ -48,11 +48,11 @@ class LocalData:
             self.coord1 = float(coords[0]) 
             self.coord2 = float(coords[1])
     
-    def init_describe(self):
-        f = open(self.textes_dir+self.hh_files['describe'], 'r', encoding='utf-8')
+    def init_description(self):
+        f = open(self.textes_dir+self.hh_files['description'], 'r', encoding='utf-8')
         t = f.read()
         f.close()
-        self.describe = t
+        self.description = t
 
     def init_photos(self):
         f = open(self.textes_dir+self.hh_files['photos'], 'r', encoding='utf-8')
@@ -66,10 +66,10 @@ class LocalData:
                 self.imgs_clear.append(st)
 
     def set_descr(self, descr):
-        self.describe = descr
-        f = open(self.textes_dir+self.hh_files['describe'], 'w', encoding='utf-8')
+        self.description = descr
+        f = open(self.textes_dir+self.hh_files['description'], 'w', encoding='utf-8')
         f.write(descr)
-        f.close
+        f.close()
 
     def set_coords(self, crds):
         all_coords = crds.split('\n')
@@ -194,13 +194,14 @@ class LocalData:
         else:
             day_str = datetime.strftime(day, '%Y-%m-%d')
             day_date = day
-        
+        print(self.weekdays)
+        print(self.justdays_strs)
         weekday_num = day_date.isoweekday()
-        if self.weekdays[weekday_num] == 1:
-            return False
+        if self.weekdays[weekday_num+1] == 1:
+            return True
         if day_str in self.justdays_strs:
-            return False
-        return True
+            return True
+        return False
 
     def holidays_pretty_hide(self):
         txt_dop = '\nОбратите внимание!\n'
