@@ -197,7 +197,7 @@ class LocalData:
         print(self.weekdays)
         print(self.justdays_strs)
         weekday_num = day_date.isoweekday()
-        if self.weekdays[weekday_num+1] == 1:
+        if self.weekdays[weekday_num-1] == 1:
             return True
         if day_str in self.justdays_strs:
             return True

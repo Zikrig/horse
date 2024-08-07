@@ -86,7 +86,7 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
                 reply_markup = calendar
             )
         else:
-            await state.update_data(date_of=date.strftime("%Y-%m-%d"))
+            await state.update_data(date_of=datetime.strftime(date,"%Y-%m-%d"))
             await state.set_state(NewTask.descr)
             
             await callback_query.message.answer(
@@ -140,5 +140,5 @@ async def descr(message: Message, state: FSMContext):
             
             tw.put_task(mysqldata, task_data)
             for adm in check_all_admin(mysqldata):
-                date_str = date_to_str(date)
+                date_str = date_to_str(datetime.strptime(date,"%Y-%m-%d"))
                 await send_notification(adm, f'<a href="tg://user?id={message.from_user.id}">Пользователь</a> хочет покататься {date_str}.\nПроверьте заявки!')
