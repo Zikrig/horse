@@ -38,7 +38,7 @@ async def default_mode(message: Message, state: FSMContext):
 @router.message(F.text == 'За дату', StateFilter(AdminTasks.tasksGood))
 async def alter_c(message: Message, state: FSMContext):  
     await state.set_state(AdminTasks.tasksGood)
-    calendar = await SimpleCalendar(locale = await get_user_locale(message.from_user)).start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
     await message.answer(
         text = 'Выберите дату для проверки',
         reply_markup = calendar
@@ -70,7 +70,7 @@ async def default_mode(message: Message, state: FSMContext):
     tasks = select_by_data_and_status(mysqldata, date_to_search, True, prom_len)
 
     if len(tasks) == 0:
-        txt_res = f'Ни одной поездки за {date_to_search} не нашлось.'
+        txt_res = f'Ни одной поездки не нашлось.'
     else:
         txt_res = 'Отлично. Какую же заявку вы ходите рассмотреть?'
 
@@ -120,9 +120,8 @@ async def tasks_callback(callback: CallbackQuery, state: FSMContext):
         task_id = task[7]
 
         text_to_mes = f'''Запланированная поездка №{str(task_id)} от <b>{date_to_str(date_of)}</b>
-От пользователя <b>{name}</b> на {str(time_of)} 
-Связь: <b>{phone}</b>
-<a href="tg://user?id={task[1]}">Телеграм юзера</a>
+От пользователя <a href="tg://user?id={task[1]}"><b>{name}</b></a> на {str(time_of)} 
+Связаться: {phone}
 Описание пользователя:
 <b><i>{descr}</i></b>
 Особые условия поездки:
@@ -172,7 +171,7 @@ async def cancel_task_callback(callback: CallbackQuery, state: FSMContext):
     await send_notification(user[1], f'Ваша поездка на {user[5]} {user[9]} была отменена')
     await callback.answer()
     await callback.message.edit_text(
-        text=f'Поездка <a href="tg://user?id={user[1]}">пользователя</a>  на {user[5]} {user[9]} успешно отменена',
+        text=f'Поездка пользователя <a href="tg://user?id={user[1]}">{user[0]}</a>  на {user[5]} {user[9]} успешно отменена. Телефон: {user[3]}',
         parse_mode='html',
         reply_markup=None
         )
@@ -211,7 +210,7 @@ async def alt_time_callback(callback: CallbackQuery, state: FSMContext):
 async def alt_date_callback(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     await state.set_state(AdminTasks.changeDate)
-    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
     await callback.message.answer(
         text = 'Выберите новую дату поездки',
         reply_markup = calendar
@@ -223,12 +222,12 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
     status = await actual_status(callback_query.message.from_user.id, state)
 
     calendar = SimpleCalendar(
-        locale=await get_user_locale(callback_query.from_user), show_alerts=True
+        locale='ru_RU.UTF-8'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
-    calendar = await SimpleCalendar(locale = await get_user_locale(callback_query.from_user)).start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
     if selected:
         await callback_query.message.answer(
             f'''Новая дата поездки {date_to_str(date)}.''',
@@ -249,12 +248,12 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
     status = await actual_status(callback_query.message.from_user.id, state)
 
     calendar = SimpleCalendar(
-        locale=await get_user_locale(callback_query.from_user), show_alerts=True
+        locale='ru_RU.UTF-8'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
-    calendar = await SimpleCalendar(locale = await get_user_locale(callback_query.from_user)).start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
     if selected:
         await callback_query.message.answer(
             f'''Вы выбрали дату {date_to_str(date)}. Проверяем наличие поездок''',

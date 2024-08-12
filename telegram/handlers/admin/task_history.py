@@ -35,7 +35,7 @@ async def default_mode(message: Message, state: FSMContext):
 @router.message(F.text == 'За дату', StateFilter(AdminTasks.tasksHistory))
 async def alter_c(message: Message, state: FSMContext):  
     await state.set_state(AdminTasks.tasksHistory)
-    calendar = await SimpleCalendar(locale = await get_user_locale(message.from_user)).start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
     await message.answer(
         text = 'Выберите дату для проверки',
         reply_markup = calendar
@@ -113,9 +113,8 @@ async def tasks_callback(callback: CallbackQuery, state: FSMContext):
         ride_descr = task[6]
         task_id = task[7]
         text_to_mes = f'''Поездка №{str(task_id)} от <b>{date_to_str(date_of)}</b>
-От пользователя <b>{name}</b>
-Связь: <b>{phone}</b>
-<a href="tg://user?id={user_id}">Телеграм юзера</a>
+От пользователя <a href="tg://user?id={user_id}"><b>{name}</b></a>
+Связаться: {phone}
 Описание пользователя:
 <b><i>{descr}</i></b>
 Особые условия поездки:
@@ -141,12 +140,12 @@ async def tasks_callback(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(SimpleCalendarCallback.filter(), AdminTasks.tasksHistory)
 async def process_simple_calendar(callback_query: CallbackQuery, callback_data: CallbackData,  state: FSMContext):
     calendar = SimpleCalendar(
-        locale=await get_user_locale(callback_query.from_user), show_alerts=True
+        locale='ru_RU.UTF-8'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
-    calendar = await SimpleCalendar(locale = await get_user_locale(callback_query.from_user)).start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
     if selected:
         await callback_query.message.answer(
             f'''Вы выбрали дату {date_to_str(date)}. Проверяем наличие поездок''',

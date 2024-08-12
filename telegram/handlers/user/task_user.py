@@ -54,7 +54,7 @@ async def days(message: Message, state: FSMContext):
 @router.message(F.text.lower() == 'другое', NewTask.date)  
 async def calend(message: Message, state: FSMContext):    
     await state.set_state(NewTask.dateCalendar)
-    calendar = await SimpleCalendar(locale = await get_user_locale(message.from_user)).start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
     await message.answer(
         text = 'Выберите, когда желаете покататься!',
         reply_markup = calendar
@@ -63,12 +63,12 @@ async def calend(message: Message, state: FSMContext):
 @router.callback_query(SimpleCalendarCallback.filter(), NewTask.dateCalendar)
 async def process_simple_calendar(callback_query: CallbackQuery, callback_data: CallbackData,  state: FSMContext):
     calendar = SimpleCalendar(
-        locale=await get_user_locale(callback_query.from_user), show_alerts=True
+        locale='ru_RU.UTF-8'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
-    calendar = await SimpleCalendar(locale = await get_user_locale(callback_query.from_user)).start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
     if selected:
         if(date < datetime.today()):
             await callback_query.message.answer(
@@ -97,7 +97,7 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
 
 @router.message(NewTask.descr)  
 async def descr(message: Message, state: FSMContext): 
-    description = message.text
+    description = message.text.replace('\'', '"')
     if description == 'Пропустить':
         description = ''
     status = await actual_status(message.from_user.id, state)
@@ -140,5 +140,5 @@ async def descr(message: Message, state: FSMContext):
             
             tw.put_task(mysqldata, task_data)
             for adm in check_all_admin(mysqldata):
-                date_str = date_to_str(datetime.strptime(date,"%Y-%m-%d"))
+                date_str = date_to_str(date.date())
                 await send_notification(adm, f'<a href="tg://user?id={message.from_user.id}">Пользователь</a> хочет покататься {date_str}.\nПроверьте заявки!')

@@ -1,0 +1,12 @@
+[Unit]                                                             
+Description=horsebot
+After=network.target 
+                                                                                                              
+[Service]
+User=u2767287_default
+WorkingDirectory=/var/www/u2767287/data/horse/horse/
+ExecStart=/horse/horses/bin/python3 bot.py                         
+Restart=always
+
+[Install]
+WantedBy=multi-user.target                                         

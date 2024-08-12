@@ -102,7 +102,7 @@ async def del_task(message: Message, state: FSMContext):
     for adm in aw.check_all_admin(mysqldata):
         task = tw.select_task_by_id(mysqldata, id)
         wr = ':'.join(str(task[3]).split(':')[:2])
-        await send_notification(adm, f'<a href="tg://user?id={task[1]}">Пользователь</a> отменил поездку на {date_to_str(task[2])} на {wr}')
+        await send_notification(adm, f'<a href="tg://user?id={task[1]}">{task[0]}</a>  отменил поездку на {date_to_str(task[2])} на {wr}. Телефон: {task[3]}')
 
 
 @router.message(MyTasks.task, F.text == 'Изменить')
@@ -118,7 +118,7 @@ async def alter_what(message: Message, state: FSMContext):
 async def alter_c(message: Message, state: FSMContext):  
     await state.set_state(MyTasks.alterDate)
     data =  await state.get_data()
-    calendar = await SimpleCalendar(locale = await get_user_locale(message.from_user)).start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
     await message.answer(
         text = 'Выберите новую дату.' + lc.holidays_pretty_hide(),
         reply_markup = calendar,
@@ -137,7 +137,7 @@ async def alter_d(message: Message, state: FSMContext):
 async def new_descr(message: Message,  state: FSMContext):
     data =  await state.get_data()
     id = data['task_id']
-    tw.alt_task_descr(mysqldata, id, message.text)
+    tw.alt_task_descr(mysqldata, id, message.text.replace('\'', '"'))
     
     status = await actual_status(message.from_user.id, state)
 
@@ -152,12 +152,12 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
     status = await actual_status(callback_query.message.from_user.id, state)
 
     calendar = SimpleCalendar(
-        locale=await get_user_locale(callback_query.from_user), show_alerts=True
+        locale='ru_RU.UTF-8'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
-    calendar = await SimpleCalendar(locale = await get_user_locale(callback_query.from_user)).start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
     if selected:
         if(date < datetime.today()):
             await callback_query.message.answer(

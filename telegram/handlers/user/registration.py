@@ -68,7 +68,7 @@ async def reg_name(message: Message, state: FSMContext):
             )
         else:
             # user_name = message.text
-            await state.update_data(user_name=message.text)
+            await state.update_data(user_name=message.text.replace('\'', '"'))
             await state.set_state(Reg.phone)
             await message.answer(
                 text = 'Спасибо! Теперь, пожалуйста, укажите ваш контактный телефон, чтобы мы вам перезвонили.',
@@ -79,12 +79,13 @@ async def reg_name(message: Message, state: FSMContext):
             
 @router.message(Reg.phone)  
 async def reg_description(message: Message, state: FSMContext):
-    if(len(message.text) < 7 or len(message.text) > 15):
+    phone = checkphone(message.text)
+    if(phone == ''):
         await message.answer(
             text = "Это не похоже на номер телефона. Пожалуйста, введите номер, чтобы мы смогли с вами связаться.",
         )
     else:
-        await state.update_data(user_phone=message.text)
+        await state.update_data(user_phone=message.text.replace('\'', '"'))
         await state.set_state(Reg.description)
         await message.answer(
             text = '''Нам нужно узнать о вас кое-что. Ответив на эти вопросы вы сильно сэкономите время телефонного разговора.
@@ -105,7 +106,7 @@ async def reg_description(message: Message, state: FSMContext):
             text = f"Простите, но у вас целых {len(message.text)} символов, а ограничение - 300 символов.",
         )
     else:
-        user_description = message.text
+        user_description = message.text.replace('\'', '"')
         if user_description == 'Пропустить':
             user_description = ''
         await state.update_data(user_description=user_description)
@@ -189,46 +190,65 @@ async def alt_user_base(message: Message, state: FSMContext):
 async def alt_name(message: Message, state: FSMContext):
     if message.text == '❌':
         return True
+    mestext = message.text.replace('\'', '"')
     if len(message.text) < 4 or len(message.text) > 50:
         await message.answer(
             text = 'Нам нужно ваше имя, чтобы связаться с вами. Пожалуйста, укажите его. В имени должно быть от 4 до 50 знаков.',
         )
     else:
         await message.answer(
-            text = f'Имя успешно изменено на {message.text}'
+            text = f'Имя успешно изменено на {mestext}'
         )
-        pd.alt_person_field(mysqldata, message.from_user.id, 'name', message.text)
+        pd.alt_person_field(mysqldata, message.from_user.id, 'name', mestext)
         await little_cancel(message, state)
 
 @router.message(UserAlt.phone)
 async def alt_phone(message: Message, state: FSMContext):
     if message.text == '❌':
         return True
-    if len(message.text) < 7 or len(message.text) > 15:
+  
+    phone = checkphone(message.text)
+
+    if phone == '':
         await message.answer(
             text = "Это не похоже на номер телефона. Пожалуйста, введите номер, чтобы мы смогли с вами связаться.",
         )
     else:
         await message.answer(
-            text = f'Телефон успешно изменен на {message.text}'
+            text = f'Телефон успешно изменен на {phone}'
         )
-        pd.alt_person_field(mysqldata, message.from_user.id, 'phone', message.text)
+        pd.alt_person_field(mysqldata, message.from_user.id, 'phone', phone)
         await little_cancel(message, state)
+
+def checkphone(phone: str):
+    phone = phone.replace('\'', '"')
+    phone = phone.replace(' ', '')
+    phone = phone.replace('+', '')
+    if len(phone) > 11 or len(phone) < 10:
+        return ''
+    if len(phone) == 11:
+        if phone[0] == '7':
+            return '+'+phone
+        if phone[0] == '8':
+            return '+7' + phone[1:]
+        return ''
+    return '+7' + phone
 
 @router.message(UserAlt.description)
 async def alt_description(message: Message, state: FSMContext):
     if message.text == '❌':
         return True
+    mestext = message.text.replace('\'', '"')
     if len(message.text) > 300:
         await message.answer(
             text = "Ваше описание длиннее 300 символов, пожалуйста, введите его чуть более сжато (вы можете скопировать ваше предыдущее сообщение).",
         )
     else:
         await message.answer(
-            text = f'Описание успешно изменено на: \n<i>{message.text}</i>',
+            text = f'Описание успешно изменено на: \n<i>{mestext}</i>',
             parse_mode = 'html'
         )
-        pd.alt_person_field(mysqldata, message.from_user.id, 'description', message.text)
+        pd.alt_person_field(mysqldata, message.from_user.id, 'description', mestext)
         await little_cancel(message, state)
 
 @router.message(UserAlt.photo)

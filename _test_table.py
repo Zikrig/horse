@@ -23,7 +23,7 @@ from table.work_with_database.admin_work import *
 # person_data3 = (1002, 'name', 'phone', 'description', 'photo')
 # put_task(mysqldata, task_data2)
 # put_task(mysqldata, task_data)
-print(select_all_tasks(mysqldata))
+# print(select_all_tasks(mysqldata))
 
 # person_gen(mysqldata, person_data)
 # person_gen(mysqldata, person_data2)

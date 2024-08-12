@@ -32,8 +32,8 @@ pgsdata = {
 }
 
 mysqldata={
-    'user':'root', 
-    'password':'password',
+    'user':'root2', 
+    'password':'T!Mak~_3AdHK ',
     'host':'127.0.0.1',
     'database':'mydb'
 }
