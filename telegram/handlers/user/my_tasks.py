@@ -102,7 +102,7 @@ async def del_task(message: Message, state: FSMContext):
     for adm in aw.check_all_admin(mysqldata):
         task = tw.select_task_by_id(mysqldata, id)
         wr = ':'.join(str(task[3]).split(':')[:2])
-        await send_notification(adm, f'<a href="tg://user?id={task[1]}">{task[0]}</a>  отменил поездку на {date_to_str(task[2])} на {wr}. Телефон: {task[3]}')
+        await send_notification(adm, f'<a href="tg://user?id={task[1]}">Пользователь</a> отменил поездку на {date_to_str(task[2])} на {wr}. Телефон: {task[3]}')
 
 
 @router.message(MyTasks.task, F.text == 'Изменить')

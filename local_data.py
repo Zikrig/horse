@@ -73,12 +73,16 @@ class LocalData:
 
     def set_coords(self, crds):
         all_coords = crds.split('\n')
-        if(not len(all_coords)>1):
+        if(len(all_coords) != 2):
             return False
-        self.coord1, self.coord2 = float(all_coords[0]), float(all_coords[1])
+        try:
+            self.coord1, self.coord2 = float(all_coords[0]), float(all_coords[1])
+        except(ValueError):
+            return False
         f = open(self.textes_dir+self.hh_files['coords'], 'w', encoding='utf-8')
         f.write(crds)
-        f.close
+        f.close()
+        return True
 
     def del_photo_by_num(self, num):
         if num > len(self.imgs)-1:

@@ -82,11 +82,16 @@ async def opis3(message: Message, state: FSMContext):
 @router.message(AlterAdmin.alterCoords)
 async def opis4(message: Message, state: FSMContext):
     await state.set_state(SelectMode.admin)
-    lc.set_coords(message.text)
-    await message.answer(
-        text = 'Координаты изменены!',
-        reply_markup = admin_menu()
-    )
+    res_coords = lc.set_coords(message.text)
+    if res_coords:
+        await message.answer(
+            text = 'Координаты изменены!',
+            reply_markup = admin_menu()
+        )
+    else:
+        await message.answer(
+            text='Какая-то проблема с координатами попробуйте еще раз.'
+        )
 
 @router.message(F.text == 'Фото', AlterAdmin.alterGlobal)
 async def opis(message: Message, state: FSMContext):
