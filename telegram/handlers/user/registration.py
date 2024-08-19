@@ -191,9 +191,9 @@ async def alt_name(message: Message, state: FSMContext):
     if message.text == '❌':
         return True
     mestext = message.text.replace('\'', '"')
-    if len(message.text) < 4 or len(message.text) > 50:
+    if len(message.text) < 2 or len(message.text) > 50:
         await message.answer(
-            text = 'Нам нужно ваше имя, чтобы связаться с вами. Пожалуйста, укажите его. В имени должно быть от 4 до 50 знаков.',
+            text = 'Нам нужно ваше имя, чтобы связаться с вами. Пожалуйста, укажите его. В имени должно быть от 2 до 50 знаков.',
         )
     else:
         await message.answer(
