@@ -137,7 +137,7 @@ async def alter_d(message: Message, state: FSMContext):
 async def new_descr(message: Message,  state: FSMContext):
     data =  await state.get_data()
     id = data['task_id']
-    tw.alt_task_descr(mysqldata, id, message.text.replace('\'', '"'))
+    tw.alt_task_descr(mysqldata, id, message.html_text.replace('\'', '"'))
     
     status = await actual_status(message.from_user.id, state)
 

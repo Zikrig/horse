@@ -62,7 +62,7 @@ async def opis(message: Message, state: FSMContext):
 @router.message(AlterAdmin.alterdescription)
 async def opis2(message: Message, state: FSMContext):
     await state.set_state(SelectMode.admin)
-    lc.set_descr(message.text)
+    lc.set_descr(message.html_text)
     await message.answer(
         text = 'Описание изменено!',
         parse_mode='html',
