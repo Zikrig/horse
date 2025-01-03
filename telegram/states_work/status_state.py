@@ -21,15 +21,15 @@ def get_new_status(pgsdata, id):
     
     status = 'user'
 
+    # print(ban_work.check_ban(pgsdata, id))
     if ban_work.check_ban(pgsdata, id) != 0:
-        # print(ban_work.check_ban(pgsdata, id))
         status = 'banned'
         return status
-
-    if admin_work.check_admin(pgsdata, id) != 0:
+    cnt_adm = admin_work.check_admin(pgsdata, id)
+    # print(cnt_adm)
+    if cnt_adm != 0:
         status = 'admin'
         return status
-    
     return status
 
 def reg_and_stat(pgsdata, person_data):

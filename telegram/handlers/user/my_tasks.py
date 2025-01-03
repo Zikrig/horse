@@ -36,10 +36,10 @@ async def get_tasks(message: Message, state: FSMContext):
 
     await message.answer(
         text = 'Выберите нужную поездку',
-        reply_markup = make_row_keyboard(tklav + ['❌'])
+        reply_markup = make_row_keyboard(tklav + ['❌ Назад ❌'])
     )
 
-@router.message(MyTasks.selectTasks, F.text != '❌')
+@router.message(MyTasks.selectTasks, F.text != '❌ Назад ❌')
 async def get_task(message: Message, state: FSMContext):    
     data =  await state.get_data()
     ids = data['tasks_ids']
@@ -59,7 +59,7 @@ async def get_task(message: Message, state: FSMContext):
 <i>{task_from_date[4]}</i>
 Мы скоро с вами свяжемся.''',
             parse_mode='html',
-            reply_markup = make_row_keyboard(['Изменить', 'Удалить', '❌'])
+            reply_markup = make_row_keyboard(['Изменить', 'Удалить', '❌ Назад ❌'])
         )
     else:
         await message.answer(
@@ -68,7 +68,7 @@ async def get_task(message: Message, state: FSMContext):
 {wr}
 ''',
             parse_mode='html',
-            reply_markup = make_row_keyboard(['Отменить', '❌'])
+            reply_markup = make_row_keyboard(['Отменить', '❌ Назад ❌'])
         )
 
 @router.message(MyTasks.task, F.text == 'Удалить')
@@ -111,14 +111,14 @@ async def alter_what(message: Message, state: FSMContext):
     data =  await state.get_data()
     await message.answer(
         text = "Что именно вы хотите изменить в поездке?",
-        reply_markup = make_row_keyboard(['Дата', 'Описание', '❌'])
+        reply_markup = make_row_keyboard(['Дата', 'Описание', '❌ Назад ❌'])
     )
 
 @router.message(MyTasks.alter, F.text == 'Дата')
 async def alter_c(message: Message, state: FSMContext):  
     await state.set_state(MyTasks.alterDate)
     data =  await state.get_data()
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     await message.answer(
         text = 'Выберите новую дату.' + lc.holidays_pretty_hide(),
         reply_markup = calendar,
@@ -130,7 +130,7 @@ async def alter_d(message: Message, state: FSMContext):
     await state.set_state(MyTasks.alterDescr)
     await message.answer(
         text = "Укажите новое описание",
-        reply_markup = make_row_keyboard(['❌'])
+        reply_markup = make_row_keyboard(['❌ Назад ❌'])
     )
 
 @router.message(MyTasks.alterDescr)
@@ -152,12 +152,12 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
     status = await actual_status(callback_query.message.from_user.id, state)
 
     calendar = SimpleCalendar(
-        locale='ru_RU.UTF-8'
+        locale='ru_RU'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     if selected:
         if(date < datetime.today()):
             await callback_query.message.answer(

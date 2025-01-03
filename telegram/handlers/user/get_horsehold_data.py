@@ -27,14 +27,14 @@ async def phts(message: Message):
             media=album_builder.build(), 
             caption=lc.description,
             reply_markup = make_row_keyboard([
-                '❌'
+                '❌ Назад ❌'
             ])
         )
     else:
         await message.answer(
             text=lc.description,
             reply_markup = make_row_keyboard([
-                '❌'
+                '❌ Назад ❌'
             ])
         )
     if(not lc.coord1 is None):

@@ -129,6 +129,6 @@ def select_hot_tasks(pgsdata):
             date_of = CURRENT_DATE 
             AND canceled = 'False' 
             AND ready = 'True'
-            AND time_of <= NOW() - INTERVAL '65 minutes' AND time_of > NOW() - INTERVAL '55 minutes'
+            AND time_of <= (NOW() - INTERVAL '65 minutes')::time AND time_of > (NOW() - INTERVAL '55 minutes')::time
         '''
     )

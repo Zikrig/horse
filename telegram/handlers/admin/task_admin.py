@@ -31,13 +31,13 @@ async def default_mode(message: Message, state: FSMContext):
     await state.set_state(AdminTasks.tasksRaw)
     await message.answer(
         text = 'Вы в меню неотвеченных заявок. Какие заявки вас интересуют?',
-        reply_markup = make_row_keyboard(['За дату', 'Сегодня', 'Завтра', 'Неделя', 'Месяц', 'Все', '❌'])
+        reply_markup = make_row_keyboard(['За дату', 'Сегодня', 'Завтра', 'Неделя', 'Месяц', 'Все', '❌ Назад ❌'])
     )
 
 @router.message(F.text == 'За дату', StateFilter(AdminTasks.tasksRaw))
 async def alter_c(message: Message, state: FSMContext):  
     await state.set_state(AdminTasks.tasksRaw)
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     await message.answer(
         text = 'Выберите дату для проверки',
         reply_markup = calendar
@@ -181,9 +181,10 @@ async def delete_callback(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     user = data['user_to_work']
     put_banned(pgsdata, user[1])
+    # await prev_delete(callback.message)
     await callback.message.answer(f'Пользователь {user[0]} успешно добавлен в бан')
     await callback.message.delete()
-    await callback_inline_del(callback)
+    # await callback_inline_del(callback)
 
 @router.callback_query(F.data.startswith('approve-'), StateFilter(AdminTasks.tasksRaw))
 async def tasks_callback(callback: CallbackQuery, state: FSMContext):
@@ -220,20 +221,23 @@ async def delete_callback(callback: CallbackQuery, state: FSMContext):
     alt_task_time(pgsdata, user[7], time)
     await callback.answer()
     make_task_planned(pgsdata, user[7])
+    
+    # await prev_delete(callback.message)
     await callback.message.answer(f'Поездка пользователя {user[0]} успешно подтверждена на время {str_time}')
     await callback.message.delete()
+    
     await send_notification(user[1], f'Ваша поездка была успешно подтверждена на время {str_time}, {date_to_str(user[5])}')
     await callback_inline_del(callback)
 
 @router.callback_query(SimpleCalendarCallback.filter(), AdminTasks.tasksRaw)
 async def process_simple_calendar(callback_query: CallbackQuery, callback_data: CallbackData,  state: FSMContext):
     calendar = SimpleCalendar(
-        locale='ru_RU.UTF-8'
+        locale='ru_RU'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     if selected:
         await callback_query.message.answer(
             f'''Вы выбрали дату {date_to_str(date)}. Проверяем наличие поездок''',
@@ -254,3 +258,15 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
             text = txt_res,
             reply_markup = tasks_inline(tasks_names, page_limiter).as_markup()
         )
+
+# async def prev_delete(message: Message):
+#     previous_message_id = message.message_id - 1  # Пример: находим сообщение по ID
+#     print(previous_message_id)
+#     # Пытаемся удалить клавиатуру у предыдущего сообщения
+#     try:
+#         await message.edit_reply_markup(
+#             message_id=previous_message_id,
+#             reply_markup=None
+#         )
+#     except Exception as e:
+#         print(f"Не удалось удалить клавиатуру у сообщения: {e}")

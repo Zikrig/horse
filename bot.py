@@ -31,15 +31,15 @@ async def checkercheck():
     # Корутина бота
     task = asyncio.create_task(main())
     asyncio.create_task(check_time())
-    while True:
-        await asyncio.sleep(120)
-        print('проспали еще 120 секунд')
-        # Раз в пять секунд проверяем файл
-        # Если там лежит 1 - останавливаем бота.
-        if check():
-            was_cancelled = task.result()
-            print(was_cancelled)
+    # while True:
+    #     await asyncio.sleep(120)
+    #     print('проспали еще 120 секунд')
+    #     # Раз в пять секунд проверяем файл
+    #     # Если там лежит 1 - останавливаем бота.
+    #     if check():
+    #         was_cancelled = task.result()
+    #         print(was_cancelled)
 
 
 if __name__ == "__main__":
-    asyncio.run(checkercheck())
+    asyncio.run(main())

@@ -31,14 +31,14 @@ async def default_mode(message: Message, state: FSMContext):
     await state.set_state(AdminTasks.tasksGood)
     await message.answer(
         text = 'Вы в меню поездок. Какие поездки вас интересуют?',
-        reply_markup = make_row_keyboard(['За дату', 'Сегодня', 'Завтра', 'Неделя', 'Месяц', 'Все', '❌'])
+        reply_markup = make_row_keyboard(['За дату', 'Сегодня', 'Завтра', 'Неделя', 'Месяц', 'Все', '❌ Назад ❌'])
     )
 
 
 @router.message(F.text == 'За дату', StateFilter(AdminTasks.tasksGood))
 async def alter_c(message: Message, state: FSMContext):  
     await state.set_state(AdminTasks.tasksGood)
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     await message.answer(
         text = 'Выберите дату для проверки',
         reply_markup = calendar
@@ -210,7 +210,7 @@ async def alt_time_callback(callback: CallbackQuery, state: FSMContext):
 async def alt_date_callback(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     await state.set_state(AdminTasks.changeDate)
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     await callback.message.answer(
         text = 'Выберите новую дату поездки',
         reply_markup = calendar
@@ -222,12 +222,12 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
     status = await actual_status(callback_query.message.from_user.id, state)
 
     calendar = SimpleCalendar(
-        locale='ru_RU.UTF-8'
+        locale='ru_RU'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     if selected:
         await callback_query.message.answer(
             f'''Новая дата поездки {date_to_str(date)}.''',
@@ -248,12 +248,12 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
     status = await actual_status(callback_query.message.from_user.id, state)
 
     calendar = SimpleCalendar(
-        locale='ru_RU.UTF-8'
+        locale='ru_RU'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     if selected:
         await callback_query.message.answer(
             f'''Вы выбрали дату {date_to_str(date)}. Проверяем наличие поездок''',

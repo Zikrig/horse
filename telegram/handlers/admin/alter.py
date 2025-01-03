@@ -24,7 +24,7 @@ async def admd1(message: Message, state: FSMContext):
             'Описание',
             'Координаты',
             'Фото',
-            '❌'
+            '❌ Назад ❌'
             ])
     )
     if(len(lc.imgs)>0):
@@ -55,7 +55,7 @@ async def opis(message: Message, state: FSMContext):
         text = 'Введите новое описание. Вы можете использовать функционал телеграма - курсив и прочее.',
         parse_mode='html',
         reply_markup = make_row_keyboard([
-            '❌'
+            '❌ Назад ❌'
             ])
     )
 
@@ -75,7 +75,7 @@ async def opis3(message: Message, state: FSMContext):
     await message.answer(
         text = 'Введите новые координаты на отдельных строках без посторонних симоволов, например:\n45.422\n25.44332',
         reply_markup = make_row_keyboard([
-            '❌'
+            '❌ Назад ❌'
             ])
     )
 
@@ -138,5 +138,5 @@ async def al(message: Message, state: FSMContext):
     lc.del_photo_by_num(int(num)-1)
     await message.answer(
         text = 'Фото успешно удалено',
-        reply_markup = make_row_keyboard([f"{i+1} ❌" for i in range(len(lc.imgs))]+['➕','❌'])
+        reply_markup = make_row_keyboard([f"{i+1}❌" for i in range(len(lc.imgs))]+['➕','❌'])
     )

@@ -23,7 +23,7 @@ async def default_mode(message: Message, state: FSMContext):
             reply_markup = main_menu_global(status)
         )
        
-@router.message(F.text == '❌', StateFilter(AlterAdmin, AdminTasks))
+@router.message(F.text == '❌ Назад ❌', StateFilter(AlterAdmin, AdminTasks))
 async def little_cancel(message: Message, state: FSMContext):
     await state.set_state(SelectMode.admin)
     await message.answer(
@@ -31,7 +31,7 @@ async def little_cancel(message: Message, state: FSMContext):
         reply_markup = admin_menu()
     )
 
-@router.message(F.text =='❌')
+@router.message(F.text =='❌ Назад ❌')
 async def little_cancel_global(message: Message, state: FSMContext):
     await state.set_state(Reg.noth)
     status = await actual_status(message.from_user.id, state)

@@ -26,7 +26,7 @@ async def new_task(message: Message, state: FSMContext):
     await state.set_state(NewTask.date)
     await message.answer(
         text = f'Выберите, когда желаете покататься!' + lc.holidays_pretty_hide(),
-        reply_markup = make_row_keyboard(['Сегодня', 'Завтра', 'Другое', '❌']),
+        reply_markup = make_row_keyboard(['Сегодня', 'Завтра', 'Другое', '❌ Назад ❌']),
         parse_mode='html'
     )
 
@@ -48,13 +48,13 @@ async def days(message: Message, state: FSMContext):
     await message.answer(
         f'''Вы выбрали дату {date_to_str(date)}. Теперь, пожалуйста, опишите особые обстоятельства поездки или нажмите "пропустить"
 Например: \n "Мы будем всей семьей, два взрослых и два ребенка, опыт катания есть только у меня"\nили "Мне обязательно нужно успеть до 20:00, но можно перенести на завтра"''',
-        reply_markup=make_row_keyboard(['Пропустить', '❌'])
+        reply_markup=make_row_keyboard(['Пропустить', '❌ Назад ❌'])
     )
 
 @router.message(F.text.lower() == 'другое', NewTask.date)  
 async def calend(message: Message, state: FSMContext):    
     await state.set_state(NewTask.dateCalendar)
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale='ru_RU').start_calendar()
     await message.answer(
         text = 'Выберите, когда желаете покататься!',
         reply_markup = calendar
@@ -63,14 +63,16 @@ async def calend(message: Message, state: FSMContext):
 @router.callback_query(SimpleCalendarCallback.filter(), NewTask.dateCalendar)
 async def process_simple_calendar(callback_query: CallbackQuery, callback_data: CallbackData,  state: FSMContext):
     calendar = SimpleCalendar(
-        locale='ru_RU.UTF-8'
+        locale='ru_RU'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     if selected:
-        if(date < datetime.today()):
+        if(date < datetime.today() - timedelta(days=1)):
+            # print(date)
+            # print(datetime.today())
             await callback_query.message.answer(
                 text='Похоже, вы планируете поездку на прошедшее время. Пожалуйста, выберите дату в будущем)',
                 reply_markup = calendar
@@ -92,7 +94,7 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
             await callback_query.message.answer(
                 f'''Вы выбрали дату {date_to_str(date)}. Теперь, пожалуйста, опишите особые обстоятельства поездки или нажмите "Пропустить".
 Например: \n "Мы будем всей семьей, два взрослых и два ребенка, опыт катания есть только у меня"\nили "Мне обязательно нужно успеть до 20:00, но можно перенести на завтра"''',
-                reply_markup=make_row_keyboard(['❌'])
+                reply_markup=make_row_keyboard(['Пропустить', '❌ Назад ❌'])
             )
 
 @router.message(NewTask.descr)  
@@ -116,7 +118,12 @@ async def descr(message: Message, state: FSMContext):
         else:
             await state.set_state(NewTask.date)
             data = await state.get_data()
-            date = datetime.date(data['date_of'])
+            # print(data['date_of'])
+            # print(datetime.strftime(data['date_of'], '%Y-%m-%d'))
+            # print(data['date_of'])
+            
+            date = datetime.strptime(data['date_of'], '%Y-%m-%d') if type(data['date_of']) == str else data['date_of']
+            
             if description != '':
                 dop = f' с текстом {description}'
             else:

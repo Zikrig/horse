@@ -20,7 +20,6 @@ class AdminMiddleware(BaseMiddleware):
 
         u_id = await self.get_id(message)
         status = get_new_status(pgsdata, u_id)
-    
         if status == 'unreg':
             result = await message.answer(
             text = "Вы пока не зарегестрированы. Вам нужно пройти регистрацию",

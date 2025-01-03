@@ -191,15 +191,15 @@ class LocalData:
         return res
     
     def is_day_holiday(self, day):
-        print('Проверяем дату')
+        # print('Проверяем дату')
         if isinstance(day, str):
             day_str = day
             day_date = datetime.strptime(day, '%Y-%m-%d')
         else:
             day_str = datetime.strftime(day, '%Y-%m-%d')
             day_date = day
-        print(self.weekdays)
-        print(self.justdays_strs)
+        # print(self.weekdays)
+        # print(self.justdays_strs)
         weekday_num = day_date.isoweekday()
         if self.weekdays[weekday_num-1] == 1:
             return True

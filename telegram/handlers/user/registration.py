@@ -13,6 +13,7 @@ router = Router()
 async def little_cancel(message: Message, state: FSMContext):
     await state.set_state(Reg.noth)
     pers = pd.select_person(pgsdata, message.from_user.id)
+    # print(pers)
     if len(pers) == 6:
         path_to_photo = f"{avas_dir}/{pers[5]}"
         capt = f'''Ваша анкета:
@@ -25,7 +26,7 @@ async def little_cancel(message: Message, state: FSMContext):
                 parse_mode = 'html',
                 reply_markup = make_row_keyboard([
                 'Изменить анкету',
-                '❌'
+                '❌ Назад ❌'
                 ])
             )
         else:
@@ -36,7 +37,7 @@ async def little_cancel(message: Message, state: FSMContext):
                 parse_mode = 'html',
                 reply_markup = make_row_keyboard([
                 'Изменить анкету',
-                '❌'
+                '❌ Назад ❌'
                 ])
             )
     else:
@@ -45,7 +46,7 @@ async def little_cancel(message: Message, state: FSMContext):
             parse_mode = 'html',
             reply_markup = make_row_keyboard([
             'Изменить анкету',
-            '❌'
+            '❌ Назад ❌'
             ])
             )
           
@@ -56,15 +57,15 @@ async def reg_start(message: Message, state: FSMContext):
     await message.answer(
         text = 'Как нам вас называть? Пожалуйста, введите свое имя',
         reply_markup = make_row_keyboard([
-            '❌'
+            '❌ Назад ❌'
             ])
     )       
 
 @router.message(Reg.name)  
 async def reg_name(message: Message, state: FSMContext):
-        if(len(message.text) < 4 or len(message.text) > 50):
+        if(len(message.text) < 2 or len(message.text) > 50):
             await message.answer(
-                text = 'Нам нужно ваше имя, чтобы связаться с вами. Пожалуйста, укажите его. В имени должно быть от 4 до 50 знаков.',
+                text = 'Нам нужно ваше имя, чтобы связаться с вами. Пожалуйста, укажите его. В имени должно быть от 2 до 50 знаков.',
             )
         else:
             # user_name = message.text
@@ -73,7 +74,7 @@ async def reg_name(message: Message, state: FSMContext):
             await message.answer(
                 text = 'Спасибо! Теперь, пожалуйста, укажите ваш контактный телефон, чтобы мы вам перезвонили.',
                 reply_markup = make_row_keyboard([
-                '❌'
+                '❌ Назад ❌'
                 ])
             )
             
@@ -95,7 +96,7 @@ async def reg_description(message: Message, state: FSMContext):
 Какой у вас опыт катания?''',
             reply_markup = make_row_keyboard([
                 'Пропустить',
-                '❌',                    
+                '❌ Назад ❌',                    
                 ])
             )
             
@@ -115,7 +116,7 @@ async def reg_description(message: Message, state: FSMContext):
             text = '''Пожалуйста, пришлите ваше фото или нажмите пропустить''',
             reply_markup = make_row_keyboard([
                 'Пропустить',
-                '❌'
+                '❌ Назад ❌'
                 ])
             )
             
@@ -158,13 +159,13 @@ async def alt_user_base(message: Message, state: FSMContext):
         await state.set_state(UserAlt.name)
         await message.answer(
             text = 'Введите имя',
-            reply_markup = make_row_keyboard(['❌'])
+            reply_markup = make_row_keyboard(['❌ Назад ❌'])
         )
     elif(txt == 'Телефон'):
         await state.set_state(UserAlt.phone)
         await message.answer(
             text = 'Введите новый телефон',
-            reply_markup = make_row_keyboard(['❌'])
+            reply_markup = make_row_keyboard(['❌ Назад ❌'])
         )
     elif(txt == 'Описание'):
         await state.set_state(UserAlt.description)
@@ -173,13 +174,13 @@ async def alt_user_base(message: Message, state: FSMContext):
 Сколько вам лет?
 Сколько вы весите?
 Какой у вас опыт катания?''',
-            reply_markup = make_row_keyboard(['❌'])
+            reply_markup = make_row_keyboard(['❌ Назад ❌'])
         )
     elif(txt == 'Фото'):
         await state.set_state(UserAlt.photo)
         await message.answer(
             text = 'Отправьте ваше новое фото',
-            reply_markup = make_row_keyboard(['❌'])
+            reply_markup = make_row_keyboard(['❌ Назад ❌'])
         )
     else:
         await message.answer(
@@ -188,7 +189,7 @@ async def alt_user_base(message: Message, state: FSMContext):
 
 @router.message(UserAlt.name)
 async def alt_name(message: Message, state: FSMContext):
-    if message.text == '❌':
+    if message.text == '❌ Назад ❌':
         return True
     mestext = message.text.replace('\'', '"')
     if len(message.text) < 2 or len(message.text) > 50:
@@ -204,7 +205,7 @@ async def alt_name(message: Message, state: FSMContext):
 
 @router.message(UserAlt.phone)
 async def alt_phone(message: Message, state: FSMContext):
-    if message.text == '❌':
+    if message.text == '❌ Назад ❌':
         return True
   
     phone = checkphone(message.text)
@@ -236,7 +237,7 @@ def checkphone(phone: str):
 
 @router.message(UserAlt.description)
 async def alt_description(message: Message, state: FSMContext):
-    if message.text == '❌':
+    if message.text == '❌ Назад ❌':
         return True
     mestext = message.text.replace('\'', '"')
     if len(message.text) > 300:

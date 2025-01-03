@@ -59,20 +59,20 @@ async def delete_callback(callback: CallbackQuery):
 @router.callback_query(F.data.startswith('add-justday'))
 async def make_calend(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Holidays.menu)
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     await callback.message.edit_reply_markup(reply_markup=calendar)
 
 
 @router.callback_query(SimpleCalendarCallback.filter(), Holidays.menu)
 async def process_simple_calendar(callback_query: CallbackQuery, callback_data: CallbackData,  state: FSMContext):
     calendar = SimpleCalendar(
-        locale='ru_RU.UTF-8'
+        locale='ru_RU'
     )
     calendar.set_dates_range(datetime(2024, 1, 1), datetime(2030, 12, 31))
     selected, date = await calendar.process_selection(callback_query, callback_data)
     
 
-    calendar = await SimpleCalendar(locale = 'ru_RU.UTF-8').start_calendar()
+    calendar = await SimpleCalendar(locale = 'ru_RU').start_calendar()
     if selected:
         lc.add_to_justdays(datetime.strftime(date,'%Y-%m-%d'))
         await callback_query.message.edit_text(

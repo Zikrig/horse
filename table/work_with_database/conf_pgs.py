@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2 import Error
 
 def select_one(my, zap):
+    # print(my)
     try:
         conn = psycopg2.connect(
             database = my['dbname'],
@@ -21,6 +22,7 @@ def select_one(my, zap):
     except (Exception, Error) as error:
         res = []
         print(f'Ошибка {error}')
+        # print('Пупупу')
         # res = error
     finally:
         return res
@@ -44,6 +46,7 @@ def select_all(my, zap, rasp=True):
         
     except Error as error:
         print(f'Ошибка {error}')
+        # print('Пупупу')
         res = []
         return res
     finally:
@@ -67,6 +70,7 @@ def send_some(my, zap):
 
     except Error as error:
         print(f'Ошибка {error}')
+        # print('Пупупу')
         res = error
         return res
     finally:

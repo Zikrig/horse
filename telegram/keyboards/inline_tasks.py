@@ -79,7 +79,7 @@ def holidays_weekdays(lc):
     builder = InlineKeyboardBuilder()
     for day in range(len(lc.days)):
         builder.row(InlineKeyboardButton(text=("✅" if lc.weekdays[day] else "❌") + lc.days[day], callback_data=f'change-day-{day}'))
-    builder.row(InlineKeyboardButton(text='❌', callback_data=f'return-to-weeks'))
+    builder.row(InlineKeyboardButton(text='❌ Назад ❌', callback_data=f'return-to-weeks'))
     return builder
 
 def holidays_justdays(lc):
@@ -89,6 +89,6 @@ def holidays_justdays(lc):
         
     builder.row(
         InlineKeyboardButton(text='Добавить', callback_data=f'add-justday'),
-        InlineKeyboardButton(text='❌', callback_data=f'return-to-weeks')
+        InlineKeyboardButton(text='❌ Назад ❌', callback_data=f'return-to-weeks')
         )
     return builder

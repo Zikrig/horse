@@ -8,6 +8,7 @@ from table.work_with_database.ban_work import *
 from table.work_with_database.admin_work import *
 
 # init_all(pgsdata)
+# put_admin(pgsdata, 480317102)
 # put_admin(pgsdata, 184374602)
 # init_people_table(pgsdata)
 # init_task_table(pgsdata)
@@ -58,11 +59,11 @@ from table.work_with_database.admin_work import *
 # zap = 'SELECT * FROM admin;'
 # send_some_pgs(pgsdata, zap)
 
-def init_all(pgsdata):
-    # print('init')
-    init_people_table(pgsdata)
-    init_task_table(pgsdata)
-    init_banned_table(pgsdata)
-    init_admin_table(pgsdata)
+# def init_all(pgsdata):
+#     # print('init')
+#     init_people_table(pgsdata)
+#     init_task_table(pgsdata)
+#     init_banned_table(pgsdata)
+#     init_admin_table(pgsdata)
 
-init_all(pgsdata)
+# init_all(pgsdata)

@@ -71,4 +71,4 @@ def admin_menu():
                 ])
 
 def alter_ancet():
-    return make_row_keyboard(['Заполнить заново', 'Имя', 'Телефон', 'Описание', 'Фото', '❌'])
+    return make_row_keyboard(['Заполнить заново', 'Имя', 'Телефон', 'Описание', 'Фото', '❌ Назад ❌'])
