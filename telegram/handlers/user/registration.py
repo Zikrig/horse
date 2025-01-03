@@ -12,7 +12,7 @@ router = Router()
 @router.message(F.text =='Анкета')
 async def little_cancel(message: Message, state: FSMContext):
     await state.set_state(Reg.noth)
-    pers = pd.select_person(mysqldata, message.from_user.id)
+    pers = pd.select_person(pgsdata, message.from_user.id)
     if len(pers) == 6:
         path_to_photo = f"{avas_dir}/{pers[5]}"
         capt = f'''Ваша анкета:
@@ -134,7 +134,7 @@ async def reg_description(message: Message, state: FSMContext):
     await state.set_state(Reg.noth)
     
     person_data = (user_id, data['user_name'], data['user_phone'], data['user_description'], ava_name)
-    status = reg_and_stat(mysqldata, person_data)
+    status = reg_and_stat(pgsdata, person_data)
     await state.update_data(status=status)
 
     # await asleep(2)
@@ -199,7 +199,7 @@ async def alt_name(message: Message, state: FSMContext):
         await message.answer(
             text = f'Имя успешно изменено на {mestext}'
         )
-        pd.alt_person_field(mysqldata, message.from_user.id, 'name', mestext)
+        pd.alt_person_field(pgsdata, message.from_user.id, 'name', mestext)
         await little_cancel(message, state)
 
 @router.message(UserAlt.phone)
@@ -217,7 +217,7 @@ async def alt_phone(message: Message, state: FSMContext):
         await message.answer(
             text = f'Телефон успешно изменен на {phone}'
         )
-        pd.alt_person_field(mysqldata, message.from_user.id, 'phone', phone)
+        pd.alt_person_field(pgsdata, message.from_user.id, 'phone', phone)
         await little_cancel(message, state)
 
 def checkphone(phone: str):
@@ -248,7 +248,7 @@ async def alt_description(message: Message, state: FSMContext):
             text = f'Описание успешно изменено на: \n<i>{mestext}</i>',
             parse_mode = 'html'
         )
-        pd.alt_person_field(mysqldata, message.from_user.id, 'description', mestext)
+        pd.alt_person_field(pgsdata, message.from_user.id, 'description', mestext)
         await little_cancel(message, state)
 
 @router.message(UserAlt.photo)
@@ -265,7 +265,7 @@ async def alt_photo(message: Message, state: FSMContext):
             message.photo[-1],
             destination=photo_path
         )
-        pd.alt_person_field(mysqldata, message.from_user.id, 'photo', ava_name)
+        pd.alt_person_field(pgsdata, message.from_user.id, 'photo', ava_name)
         await message.answer(
             text = f'Фото успешно изменено.',
         )

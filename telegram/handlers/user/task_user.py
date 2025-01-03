@@ -106,7 +106,7 @@ async def descr(message: Message, state: FSMContext):
             text = f'Длина вашего описания составила {len(description)} знаков! Пожалуйста, постарайтесь уложиться в 300 знаков.'
         )
     else:
-        tasks = tw.select_unready_tasks(mysqldata, message.from_user.id)
+        tasks = tw.select_unready_tasks(pgsdata, message.from_user.id)
         if(len(tasks) > 10): 
             await state.set_state('*')
             await message.answer(
@@ -116,7 +116,7 @@ async def descr(message: Message, state: FSMContext):
         else:
             await state.set_state(NewTask.date)
             data = await state.get_data()
-            date = data['date_of']
+            date = datetime.date(data['date_of'])
             if description != '':
                 dop = f' с текстом {description}'
             else:
@@ -135,10 +135,10 @@ async def descr(message: Message, state: FSMContext):
                 date,
                 '00:00',
                 description,
-                '0'
+                False
             ]
             
-            tw.put_task(mysqldata, task_data)
-            for adm in check_all_admin(mysqldata):
+            tw.put_task(pgsdata, task_data)
+            for adm in check_all_admin(pgsdata):
                 date_str = date_to_str(date.date())
                 await send_notification(adm, f'<a href="tg://user?id={message.from_user.id}">Пользователь</a> хочет покататься {date_str}.\nПроверьте заявки!')

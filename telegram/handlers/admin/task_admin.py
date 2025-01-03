@@ -18,7 +18,7 @@ from telegram.states_work.time_changer import *
 
 from table.work_with_database.task_work import *
 from table.work_with_database.ban_work import *
-from config import mysqldata, avas_dir
+from config import pgsdata, avas_dir
 
 from misc import send_notification
 
@@ -66,7 +66,7 @@ async def default_mode(message: Message, state: FSMContext):
         )
         return True
 
-    tasks = select_by_data_and_status(mysqldata, date_to_search, '0', prom_len)
+    tasks = select_by_data_and_status(pgsdata, date_to_search, False, prom_len)
 
     if len(tasks) == 0:
         txt_res = 'Ни одной заявки не нашлось.'
@@ -89,7 +89,7 @@ async def tasks_callback(callback: CallbackQuery, state: FSMContext):
     tasks_names = data['tasks_names']
     tasks = data['tasks']
     butt_data = callback.data.replace('blist', '', 1)
-
+    # print(tasks)
     tasks_on_page_max = len(tasks_names)//page_limiter
     if len(tasks_names) % page_limiter != 0:
         tasks_on_page_max += 1
@@ -105,7 +105,7 @@ async def tasks_callback(callback: CallbackQuery, state: FSMContext):
             await callback.message.edit_reply_markup(reply_markup=tasks_inline(tasks_names, page_limiter, page_num + 1).as_markup())
     else:
         task = tasks[int(butt_data) - 1]
-        
+        # print(task)
         await state.update_data(user_to_work=task)
 
         name = task[0]
@@ -126,7 +126,7 @@ async def tasks_callback(callback: CallbackQuery, state: FSMContext):
         
         photo_fin_path = avas_dir +'/'+ photo_path
         
-        if check_ban(mysqldata, user_id) > 0:
+        if check_ban(pgsdata, user_id) > 0:
             await callback.message.answer(
                 text = f'Извините, пользователь {name} уже был забанен'
                 )   
@@ -155,12 +155,12 @@ async def tasks_callback(callback: CallbackQuery, state: FSMContext):
     # print(data)
     user = data['user_to_work']
     await callback.answer()
-    if(check_ban(mysqldata, user[1])):
+    if(check_ban(pgsdata, user[1])):
         await callback.message.answer(
         text=f'Пользователь {user[0]} уже был забанен.'
         )
         await callback.message.edit_reply_markup(None)
-    elif(select_task_by_id(mysqldata, user[7])[5]):
+    elif(select_task_by_id(pgsdata, user[7])[5]):
         await callback.message.answer(
         text=f'Эта поездка уже была подтвержена'
         )
@@ -180,7 +180,7 @@ async def delete_callback(callback: CallbackQuery):
 async def delete_callback(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     user = data['user_to_work']
-    put_banned(mysqldata, user[1])
+    put_banned(pgsdata, user[1])
     await callback.message.answer(f'Пользователь {user[0]} успешно добавлен в бан')
     await callback.message.delete()
     await callback_inline_del(callback)
@@ -190,12 +190,12 @@ async def tasks_callback(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     user = data['user_to_work']
     await callback.answer()
-    if(check_ban(mysqldata, user[1])):
+    if(check_ban(pgsdata, user[1])):
         await callback.message.answer(
         text=f'Пользователь {user[0]} уже был забанен.'
         )
         await callback.message.edit_reply_markup(None)
-    elif(select_task_by_id(mysqldata, user[7])[5]):
+    elif(select_task_by_id(pgsdata, user[7])[5]):
         await callback.message.answer(
         text=f'Эта поездка уже была подтвержена'
         )
@@ -217,9 +217,9 @@ async def delete_callback(callback: CallbackQuery, state: FSMContext):
     time = datetime.strptime(str_time, '%H:%M')
     data = await state.get_data()
     user = data['user_to_work']
-    alt_task_time(mysqldata, user[7], time)
+    alt_task_time(pgsdata, user[7], time)
     await callback.answer()
-    make_task_planned(mysqldata, user[7])
+    make_task_planned(pgsdata, user[7])
     await callback.message.answer(f'Поездка пользователя {user[0]} успешно подтверждена на время {str_time}')
     await callback.message.delete()
     await send_notification(user[1], f'Ваша поездка была успешно подтверждена на время {str_time}, {date_to_str(user[5])}')
@@ -239,7 +239,7 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
             f'''Вы выбрали дату {date_to_str(date)}. Проверяем наличие поездок''',
         )
 
-        tasks = select_by_data_and_status(mysqldata, date.strftime("%Y-%m-%d"), '0', 1)
+        tasks = select_by_data_and_status(pgsdata, date.strftime("%Y-%m-%d"), False, 1)
 
         if len(tasks) == 0:
             txt_res = 'Ни одной заявки не нашлось.'

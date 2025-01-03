@@ -20,7 +20,7 @@ class UserMiddleware(BaseMiddleware):
 
         u_id = await self.get_id(message)
         
-        status = get_new_status(mysqldata, u_id)
+        status = get_new_status(pgsdata, u_id)
         
         if status == 'unreg':
             result = await message.answer(

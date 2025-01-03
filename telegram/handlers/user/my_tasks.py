@@ -24,7 +24,7 @@ router = Router()
 @router.message(F.text.lower() == 'мои поездки')  
 async def get_tasks(message: Message, state: FSMContext):    
     await state.set_state(MyTasks.selectTasks)
-    tasks = tw.select_dates_onready(mysqldata, message.from_user.id)
+    tasks = tw.select_dates_onready(pgsdata, message.from_user.id)
     tklav_raw = [[tasks[n][1].strftime("%d"), tasks[n][1].strftime("%m")]  for n in range(len(tasks))]
 
     tklav_raw = [date_to_str(tasks[n][1]) for n in range(len(tasks))]
@@ -48,7 +48,7 @@ async def get_task(message: Message, state: FSMContext):
     await state.update_data(task_id=id_for)
     await state.set_state(MyTasks.task)
 
-    task_from_date = tw.select_task_by_id(mysqldata, id_for)
+    task_from_date = tw.select_task_by_id(pgsdata, id_for)
     wr = ':'.join(str(task_from_date[3]).split(':')[:2])
     if len(task_from_date) == 0:
         return 0
@@ -76,7 +76,7 @@ async def del_task(message: Message, state: FSMContext):
     data =  await state.get_data()
     await state.set_state(MyTasks.zero)
     id = data['task_id']
-    tw.delete_task_by_id(mysqldata, id)
+    tw.delete_task_by_id(pgsdata, id)
     
     status = await actual_status(message.from_user.id, state)
 
@@ -90,7 +90,7 @@ async def del_task(message: Message, state: FSMContext):
     data =  await state.get_data()
     await state.set_state(MyTasks.zero)
     id = data['task_id']
-    tw.cancel_task(mysqldata, id)
+    tw.cancel_task(pgsdata, id)
     
     status = await actual_status(message.from_user.id, state)
 
@@ -99,8 +99,8 @@ async def del_task(message: Message, state: FSMContext):
         reply_markup = main_menu_global(status)
     )
     
-    for adm in aw.check_all_admin(mysqldata):
-        task = tw.select_task_by_id(mysqldata, id)
+    for adm in aw.check_all_admin(pgsdata):
+        task = tw.select_task_by_id(pgsdata, id)
         wr = ':'.join(str(task[3]).split(':')[:2])
         await send_notification(adm, f'<a href="tg://user?id={task[1]}">Пользователь</a> отменил поездку на {date_to_str(task[2])} на {wr}. Телефон: {task[3]}')
 
@@ -137,7 +137,7 @@ async def alter_d(message: Message, state: FSMContext):
 async def new_descr(message: Message,  state: FSMContext):
     data =  await state.get_data()
     id = data['task_id']
-    tw.alt_task_descr(mysqldata, id, message.html_text.replace('\'', '"'))
+    tw.alt_task_descr(pgsdata, id, message.html_text.replace('\'', '"'))
     
     status = await actual_status(message.from_user.id, state)
 
@@ -182,4 +182,4 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
             await state.set_state(MyTasks.zero)
             data =  await state.get_data()
             id = data['task_id']
-            tw.alt_task_date(mysqldata, id, date.strftime("%Y-%m-%d"))
+            tw.alt_task_date(pgsdata, id, date.strftime("%Y-%m-%d"))

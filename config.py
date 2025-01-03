@@ -20,21 +20,15 @@ hh_files = {
     'photos': '/photo_paths.txt'
 }
 
-# pgsdata = {
-#     'dbname':"postgres",
-#     'user':"postgres",
-#     # 'password':"password",
-#     'password':'httphuggingfapaceTSAGITSArenamapuserpass',
-#     # 'host':"db",
-#     'host': '127.0.0.1',
-#     # 'port':"5433"
-#     'port':"5432"
-# }
-
-mysqldata={
-    'user':'root2', 
-    'password':'T!Mak~_3AdHK ',
-    'host':'127.0.0.1',
-    'database':'mydb'
+pgsdata = {
+    'dbname':"postgres",
+    'user':"postgres",
+    'password':'12345',
+    'host': 'localhost',
+#     'user':"root",
+#     'password':'bU9oR9zU7g',
+#     'host': 'localhost',
+    'port':"5432"
 }
+
 lc = LocalData(hh_files, textes_dir, horseh_dir, holiday_files)

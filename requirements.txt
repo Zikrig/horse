@@ -3,4 +3,4 @@ aiogram-calendar
 environs
 asyncio
 schedule
-mysql-connector-python
+pgs-connector-python
